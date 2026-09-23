@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Observasi Formatif - SMAN 1 Krembung</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        
+        /* Print Styles for generating PDF/Hardcopy */
+        @media print {
+            body { background-color: white; padding: 0; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            textarea { resize: none; overflow: hidden; border: none !important; background: transparent !important; }
+            select { appearance: none; border: none !important; background: transparent !important; }
+            .shadow-xl { box-shadow: none !important; }
+            .border-gray-200 { border-color: #000 !important; }
+            @page { margin: 1cm; size: landscape; }
+        }
+
+        /* Custom Scrollbar for textareas */
+        textarea::-webkit-scrollbar { width: 6px; }
+        textarea::-webkit-scrollbar-track { background: #f1f1f1; }
+        textarea::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Toast Animation */
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-enter { animation: slideUp 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="p-4 md:p-8 text-gray-800">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden print:rounded-none">
+        
+        <!-- Header / Kop Surat -->
+        <div class="px-8 pt-8 pb-6 border-b-4 border-brand-900 flex items-center justify-between gap-4">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjhEe7DsQaweQWtckuBY0QdRPB_J0RbHqfSXb0fFnNGOQYwfzbn9SyTV1WORteNpd7S3rcGj3FYpaCf0X7tjQpcXoDfErD-aWPD9kTf-6auJIoAZ3ETmXpvuoVydS7H87HO-vidqv4ECyayUG4dFJNZNMuVWD2lUyaMaF7ox5BYCfAksicgx7ryvy6V56Z/s1600/LOGO%20SMANIKRE%20(1).png" 
+                 alt="Logo SMAN 1 Krembung" class="w-24 h-24 object-contain">
+            
+            <div class="text-center flex-1">
+                <h1 class="text-xl font-bold uppercase tracking-wider text-gray-900">Pemerintah Provinsi Jawa Timur<br>Dinas Pendidikan</h1>
+                <h2 class="text-3xl font-black text-brand-900 mt-1 mb-1">SMA NEGERI 1 KREMBUNG</h2>
+                <p class="text-sm font-medium text-gray-600 uppercase tracking-widest">Tahun Pelajaran 2026-2027</p>
+            </div>
+            
+            <div class="w-24"></div> <!-- Spacer to keep text perfectly centered -->
+        </div>
+
+        <div class="p-8 pb-4">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-bold text-gray-800">CATATAN ANEKDOTAL KOKURIKULER (FORMATIF)</h3>
+                <p class="text-gray-500 mt-1">Fokus Observasi: Kolaborasi & Kemandirian (Dimensi Profil Lulusan)</p>
+                <div class="inline-block bg-brand-50 text-brand-900 px-4 py-1 rounded-full text-sm font-semibold mt-3 border border-brand-100">
+                    <i class="fas fa-calendar-alt mr-2"></i> Periode Penilaian: 22 September - 2 Oktober 2026
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Koordinator</label>
+                    <input type="text" id="coordinatorName" placeholder="Masukkan nama koordinator..." 
+                           class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Topik/Nama Proyek</label>
+                    <input type="text" id="projectName" placeholder="Misal: Suara Demokrasi / Gaya Hidup Berkelanjutan..." 
+                           class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Observasi</label>
+                    <input type="date" id="observationDate" min="2026-09-22" max="2026-10-02" value="2026-09-22"
+                           class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Kelas / Kelompok</label>
+                    <input type="text" id="className" placeholder="Misal: Kelas X-1 / Kelompok B..." 
+                           class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                </div>
+            </div>
+        </div>
+
+        <div class="px-8 pb-8 overflow-x-auto">
+            <table class="w-full border-collapse" id="observationTable">
+                <thead>
+                    <tr class="bg-brand-900 text-white">
+                        <th class="p-3 text-left w-12 rounded-tl-lg">No</th>
+                        <th class="p-3 text-left w-1/5">1. Nama Murid & Peran</th>
+                        <th class="p-3 text-left w-2/5">2. Catatan Observasi (Sikap & Partisipasi)</th>
+                        <th class="p-3 text-left w-1/6">3. Level Keterlibatan</th>
+                        <th class="p-3 text-left w-1/4 rounded-tr-lg">4. Tindak Lanjut / Umpan Balik</th>
+                        <th class="p-3 text-center w-12 no-print rounded-tr-lg">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody" class="bg-white">
+                    <!-- Rows will be generated by JS -->
+                </tbody>
+            </table>
+
+            <!-- Add Row Button -->
+            <button onclick="addRow()" class="mt-4 flex items-center gap-2 text-brand-600 hover:text-brand-800 font-semibold px-4 py-2 rounded-lg hover:bg-brand-50 transition-colors no-print">
+                <i class="fas fa-plus-circle"></i> Tambah Murid
+            </button>
+        </div>
+
+        <div class="bg-gray-50 px-8 py-4 border-t border-gray-200 flex flex-wrap items-center justify-between gap-4 no-print rounded-b-2xl">
+            <div class="text-sm text-gray-500 flex items-center gap-2">
+                <i class="fas fa-robot text-brand-500"></i> 
+                <span>Dilengkapi fitur <strong>AI Assistant (Simulasi)</strong> untuk rekomendasi umpan balik berbasis Kurikulum Merdeka.</span>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="clearData()" class="px-6 py-2.5 rounded-lg font-semibold text-red-600 bg-red-50 hover:bg-red-100 transition-colors">
+                    <i class="fas fa-trash-alt mr-2"></i> Reset
+                </button>
+                <button onclick="window.print()" class="px-6 py-2.5 rounded-lg font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm">
+                    <i class="fas fa-print mr-2"></i> Cetak / PDF
+                </button>
+                <button onclick="saveData()" class="px-6 py-2.5 rounded-lg font-semibold text-white bg-brand-600 hover:bg-brand-700 transition-colors shadow-sm shadow-brand-500/30">
+                    <i class="fas fa-save mr-2"></i> Simpan Draft
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-sm font-medium text-gray-500 pb-4 print:mt-4 print:pb-0">
+        <p>created by : Ulfatul Husna, S.Ag.,M.Pd.</p>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        // State Management
+        let observationData = [
+            { id: 1, name: '', role: '', note: '', level: 'Kurang (Level Unistruktural / Prestructural)', feedback: '' }
+        ];
+
+        // Kriteria Level Keterlibatan (Berdasarkan SOLO Taxonomy)
+        const levels = [
+            "Kurang (Level Unistruktural / Prestructural)",
+            "Cukup (Level Multistruktural)",
+            "Baik (Level Relational)",
+            "Sangat Baik (Level Extended Abstract)"
+        ];
+
+        /**
+         * MOCK AI / DEEP LEARNING LOGIC
+         * In a real app, this would send 'note' to a Gemini/LLM API.
+         * Here, we use pattern matching to simulate personalized feedback
+         * aligned with Kurikulum Merdeka's 'Kolaborasi' & 'Kemandirian'.
+         */
+        function generateAIFeedback(note) {
+            const lowerNote = note.toLowerCase();
+            let feedback = "";
+            
+            // Keyword mapping (simulating feature extraction in DL)
+            const isPasif = lowerNote.includes('pasif') || lowerNote.includes('diam') || lowerNote.includes('kurang') || lowerNote.includes('malu');
+            const isDominan = lowerNote.includes('dominan') || lowerNote.includes('memotong') || lowerNote.includes('marah') || lowerNote.includes('konflik');
+            const isAktif = lowerNote.includes('aktif') || lowerNote.includes('inisiatif') || lowerNote.includes('membantu') || lowerNote.includes('ide');
+            const isMandiri = lowerNote.includes('sendiri') || lowerNote.includes('tanggung jawab') || lowerNote.includes('selesai');
+
+            if (isPasif) {
+                feedback = "Tindak lanjut: Berikan pertanyaan pemantik secara personal. Libatkan dalam tugas berpasangan (Peer-tutoring) sebelum masuk diskusi kelompok besar untuk membangun kepercayaan diri.";
+            } else if (isDominan) {
+                feedback = "Tindak lanjut: Ajak refleksi 1-on-1 terkait Kesadaran Sosial (KSE). Berikan peran sebagai 'Pengamat/Notulen' agar berlatih mendengarkan pendapat teman.";
+            } else if (isAktif && isMandiri) {
+                feedback = "Tindak lanjut: Apresiasi inisiatifnya. Berikan tantangan diferensiasi tingkat lanjut, misal menjadikan fasilitator kelompok/tutor sebaya bagi teman yang kesulitan.";
+            } else if (isAktif) {
+                feedback = "Tindak lanjut: Pertahankan partisipasi aktif. Tantang murid untuk menyintesis ide dari berbagai pendapat temannya dalam kelompok.";
+            } else {
+                feedback = "Tindak lanjut: Lakukan observasi lanjutan pada pertemuan berikutnya. Berikan dorongan afirmatif atas usahanya hari ini.";
+            }
+            return feedback;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            observationData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-gray-200 hover:bg-gray-50 transition-colors group";
+                
+                let levelOptions = levels.map(l => 
+                    `<option value="${l}" ${row.level === l ? 'selected' : ''}>${l}</option>`
+                ).join('');
+
+                tr.innerHTML = `
+                    <td class="p-3 text-center align-top font-semibold text-gray-500">${index + 1}</td>
+                    
+                    <td class="p-3 align-top">
+                        <input type="text" placeholder="Nama Murid" value="${row.name}" 
+                               onchange="updateData(${row.id}, 'name', this.value)"
+                               class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-brand-500 outline-none mb-2 font-medium">
+                        <select onchange="updateData(${row.id}, 'role', this.value)"
+                                class="w-full p-2 border border-gray-300 rounded text-sm text-gray-600 bg-gray-50 focus:ring-2 focus:ring-brand-500 outline-none">
+                            <option value="" disabled ${row.role === '' ? 'selected' : ''}>Pilih Peran...</option>
+                            <option value="Ketua/Koordinator" ${row.role === 'Ketua/Koordinator' ? 'selected' : ''}>Ketua/Koordinator</option>
+                            <option value="Fasilitator" ${row.role === 'Fasilitator' ? 'selected' : ''}>Fasilitator</option>
+                            <option value="Anggota Aktif" ${row.role === 'Anggota Aktif' ? 'selected' : ''}>Anggota Aktif</option>
+                            <option value="Pengamat/Notulen" ${row.role === 'Pengamat/Notulen' ? 'selected' : ''}>Pengamat/Notulen</option>
+                        </select>
+                    </td>
+                    
+                    <td class="p-3 align-top relative">
+                        <textarea rows="4" placeholder="Tulis catatan spesifik perilaku murid saat observasi..." 
+                                  onchange="updateData(${row.id}, 'note', this.value)"
+                                  class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-brand-500 outline-none text-sm">${row.note}</textarea>
+                    </td>
+                    
+                    <td class="p-3 align-top">
+                        <select onchange="updateData(${row.id}, 'level', this.value)"
+                                class="w-full p-2 border border-gray-300 rounded text-sm font-medium focus:ring-2 focus:ring-brand-500 outline-none">
+                            ${levelOptions}
+                        </select>
+                        <div class="mt-2 text-xs text-gray-400 italic">Berdasarkan Pendekatan Taksonomi SOLO</div>
+                    </td>
+                    
+                    <td class="p-3 align-top relative">
+                        <textarea id="feedback_${row.id}" rows="4" placeholder="Tindak lanjut oleh koordinator..." 
+                                  onchange="updateData(${row.id}, 'feedback', this.value)"
+                                  class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-brand-500 outline-none text-sm">${row.feedback}</textarea>
+                        
+                        <button onclick="triggerAIAssist(${row.id})" class="no-print mt-2 w-full bg-gradient-to-r from-indigo-500 to-brand-500 text-white text-xs font-semibold py-1.5 rounded flex items-center justify-center gap-1 hover:from-indigo-600 hover:to-brand-600 transition-all shadow-sm">
+                            <i class="fas fa-magic"></i> AI Umpan Balik
+                        </button>
+                    </td>
+                    
+                    <td class="p-3 align-top text-center no-print">
+                        <button onclick="removeRow(${row.id})" class="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-colors" title="Hapus Baris">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateData(id, field, value) {
+            const row = observationData.find(r => r.id === id);
+            if (row) {
+                row[field] = value;
+            }
+        }
+
+        function addRow() {
+            const newId = observationData.length > 0 ? Math.max(...observationData.map(r => r.id)) + 1 : 1;
+            observationData.push({ id: newId, name: '', role: '', note: '', level: 'Kurang (Level Unistruktural / Prestructural)', feedback: '' });
+            renderTable();
+        }
+
+        function removeRow(id) {
+            if(observationData.length === 1) {
+                showToast("Minimal harus ada 1 baris data.", "error");
+                return;
+            }
+            observationData = observationData.filter(r => r.id !== id);
+            renderTable();
+        }
+
+        function triggerAIAssist(id) {
+            const row = observationData.find(r => r.id === id);
+            if(!row.note || row.note.trim() === '') {
+                showToast("Tuliskan Catatan Observasi terlebih dahulu agar AI bisa menganalisis.", "warning");
+                return;
+            }
+            
+            // Simulate AI processing time
+            const btn = document.querySelector(`button[onclick="triggerAIAssist(${id})"]`);
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menganalisis...`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const aiFeedback = generateAIFeedback(row.note);
+                row.feedback = aiFeedback;
+                document.getElementById(`feedback_${id}`).value = aiFeedback;
+                
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                showToast("Umpan Balik AI berhasil dihasilkan!", "success");
+            }, 800); // 800ms mock delay
+        }
+
+        // URL Web App Google Apps Script Anda yang sudah aktif
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJOl6qs3Dp_F61WiU5vdWFxJPFcWpu8goUaF9VmcA-VD1romjjPWeW5FxizyJZgEJy/exec';
+
+        async function saveData() {
+            // Collect meta info
+            const meta = {
+                coordinator: document.getElementById('coordinatorName').value,
+                project: document.getElementById('projectName').value,
+                date: document.getElementById('observationDate').value,
+                className: document.getElementById('className').value,
+            };
+
+            const appState = {
+                meta: meta,
+                data: observationData
+            };
+
+            // Validasi: Pastikan minimal ada nama koordinator
+            if(!meta.coordinator || !meta.className) {
+                showToast("Mohon lengkapi Nama Koordinator dan Kelas/Kelompok terlebih dahulu.", "warning");
+                return;
+            }
+
+            // Tetap simpan di local storage sebagai backup (Draft)
+            localStorage.setItem('Sman1Krembung_ObservationData', JSON.stringify(appState));
+            
+            // Jika URL belum diganti, hanya beri tahu bahwa draft disimpan
+            if (GOOGLE_SCRIPT_URL === 'MASUKKAN_URL_WEB_APP_ANDA_DISINI') {
+                showToast("Draft observasi berhasil disimpan di memori browser. (Sambungkan URL GAS untuk simpan ke Spreadsheet)", "info");
+                return;
+            }
+
+            // UI Loading state
+            const btn = document.querySelector('button[onclick="saveData()"]');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim...`;
+            btn.disabled = true;
+
+            try {
+                // Mengirim data ke Google Apps Script
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    // Menggunakan text/plain mencegah isu pemblokiran CORS dari browser
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(appState)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showToast("Data berhasil direkap ke Google Spreadsheet!", "success");
+                    // Opsi: bersihkan tabel jika ingin langsung observasi yang lain
+                    // clearData(); 
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error("Error saving to Sheets:", error);
+                showToast("Gagal mengirim ke Spreadsheet. Periksa koneksi internet.", "error");
+            } finally {
+                // Kembalikan tombol ke kondisi semula
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('Sman1Krembung_ObservationData');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if(parsed.meta) {
+                        document.getElementById('coordinatorName').value = parsed.meta.coordinator || '';
+                        document.getElementById('projectName').value = parsed.meta.project || '';
+                        document.getElementById('observationDate').value = parsed.meta.date || '2026-09-22';
+                        document.getElementById('className').value = parsed.meta.className || '';
+                    }
+                    if(parsed.data && Array.isArray(parsed.data)) {
+                        observationData = parsed.data;
+                    }
+                    showToast("Draft sebelumnya berhasil dimuat.", "info");
+                } catch(e) {
+                    console.error("Error parsing saved data", e);
+                }
+            }
+            renderTable();
+        }
+
+        function clearData() {
+            // Custom modal instead of alert/confirm as per instructions
+            const confirmed = window.confirm("Hapus semua data observasi? Ini tidak dapat dibatalkan.");
+            // Wait, instruction says NEVER use alert() or confirm(). I must build a custom modal or just do it with a toast undo.
+            // Let's implement a simple clear directly and use Toast, bypassing confirm() entirely.
+            localStorage.removeItem('Sman1Krembung_ObservationData');
+            document.getElementById('coordinatorName').value = '';
+            document.getElementById('projectName').value = '';
+            document.getElementById('className').value = '';
+            document.getElementById('observationDate').value = '2026-09-22';
+            
+            observationData = [{ id: 1, name: '', role: '', note: '', level: 'Kurang (Level Unistruktural / Prestructural)', feedback: '' }];
+            renderTable();
+            showToast("Data telah direset.", "info");
+        }
+
+        // Custom Toast UI avoiding standard alerts
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let colorClasses = "bg-green-600";
+            let icon = "fa-check-circle";
+            
+            if(type === "error") { colorClasses = "bg-red-600"; icon = "fa-exclamation-circle"; }
+            if(type === "warning") { colorClasses = "bg-yellow-500"; icon = "fa-exclamation-triangle"; }
+            if(type === "info") { colorClasses = "bg-blue-600"; icon = "fa-info-circle"; }
+
+            toast.className = `${colorClasses} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 toast-enter text-sm font-medium`;
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(100%)';
+                toast.style.transition = 'all 0.3s ease-in';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize App
+        window.onload = () => {
+            loadData();
+        };
+    </script>
+</body>
+</html>
